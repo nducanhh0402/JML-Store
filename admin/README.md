@@ -5,14 +5,15 @@
 
 ## 📁 Cấu Trúc Dự Án
 ```
-c:\Dự Án Ma\
-├── frontend\                  # Giao diện người dùng Admin
-│   ├── index.html             # Cấu trúc HTML chính của Dashboard
-│   ├── style.css              # Design tokens, CSS variables, thanh cuộn, hiệu ứng
-│   └── script.js              # Khởi tạo biểu đồ, icons, logic modal & lọc bảng
-│
-├── backend\                   # Dịch vụ API và xử lý dữ liệu (Node.js/Python/...)
-│   └── README.md              # Đặc tả các endpoint API cần thiết
+admin/
+├── backend/                   # Cổng Quản Trị Hệ Thống Sàn TMĐT
+│   ├── index.html             # Dashboard chính (Thống kê GMV, duyệt Shop, Escrow, tranh chấp)
+│   ├── login.html             # Cổng Đăng Nhập & Đăng Ký Quản Trị Viên (Auth Guard)
+│   ├── auth.js                # Quản lý phiên làm việc, phân quyền & xác thực LocalStorage
+│   ├── script.js              # Biểu đồ Chart.js, xử lý Tab & dữ liệu Shop/Đơn hàng
+│   ├── style.css              # Design tokens, CSS variables, thanh cuộn & hiệu ứng
+│   ├── jml-store-icon.svg     # Logo biểu tượng Sàn JML Store
+│   └── README.md              # Đặc tả API và hướng dẫn các tài khoản Admin
 │
 └── README.md                  # Hướng dẫn tổng thể
 ```
@@ -38,11 +39,15 @@ Dựa trên việc đọc và phân tích cấu trúc trực tiếp từ file Fi
 
 ---
 
-## 2. Cách Xem Và Khởi Chạy Frontend
-Bạn có thể mở trực tiếp file `frontend/index.html` bằng cách nhấp đúp chuột để xem trên bất kỳ trình duyệt nào.
-Hoặc dùng local server:
-```powershell
-cd frontend
-python -m http.server 3000
-```
-Truy cập: `http://localhost:3000`
+## 2. Cách Xem Và Khởi Chạy
+- **Cách 1: Mở trực tiếp bằng trình duyệt**
+  - Nhấp đúp chuột vào file `admin/backend/login.html` để đăng nhập / đăng ký tài khoản Quản trị.
+  - Sau khi đăng nhập, hệ thống sẽ tự động đưa bạn vào `admin/backend/index.html`.
+  - Nếu mở trực tiếp `index.html` khi chưa đăng nhập, hệ thống sẽ tự động bảo vệ và chuyển hướng về `login.html`.
+
+- **Cách 2: Khởi chạy bằng local server (Python / Live Server)**
+  ```powershell
+  cd admin/backend
+  python -m http.server 3000
+  ```
+  Truy cập: `http://localhost:3000/login.html` hoặc `http://localhost:3000`

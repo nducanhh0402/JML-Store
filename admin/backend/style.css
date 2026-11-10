@@ -76,13 +76,15 @@ body {
 
 #shopDetailModal:not(.hidden),
 #orderDetailModal:not(.hidden),
-#campaignModal:not(.hidden) {
+#campaignModal:not(.hidden),
+#adminAuthModal:not(.hidden) {
     animation: fadeIn 0.15s ease-out;
 }
 
 #shopDetailModal:not(.hidden) > div,
 #orderDetailModal:not(.hidden) > div,
-#campaignModal:not(.hidden) > div {
+#campaignModal:not(.hidden) > div,
+#adminAuthModal:not(.hidden) > div {
     animation: scaleUp 0.15s ease-out;
 }
 

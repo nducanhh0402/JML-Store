@@ -4,6 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JML Store Marketplace Admin - Quản Trị Sàn TMĐT</title>
+    <!-- BẢO VỆ PHÂN QUYỀN: BẮT BUỘC ĐĂNG KÝ HOẶC ĐĂNG NHẬP MỚI ĐƯỢC VÀO TRANG -->
+    <style id="authBlocker">body { display: none !important; }</style>
+    <script>
+        (function() {
+            try {
+                // Kiểm tra active session trong sessionStorage (phiên đăng nhập hiện tại)
+                var session = sessionStorage.getItem('jml_admin_session');
+                if (!session || session === 'null' || session === 'undefined') {
+                    // Chưa đăng nhập / chưa đăng ký -> ĐẨY NGAY LẬP TỨC RA TRANG LOGIN.HTML
+                    window.location.replace('login.html');
+                    return;
+                }
+                var user = JSON.parse(session);
+                if (!user || (!user.email && !user.username)) {
+                    sessionStorage.removeItem('jml_admin_session');
+                    window.location.replace('login.html');
+                    return;
+                }
+                // Đã đăng nhập hợp lệ -> Gỡ bỏ ẩn trang và cho phép hiển thị
+                var blocker = document.getElementById('authBlocker');
+                if (blocker) blocker.remove();
+            } catch (e) {
+                window.location.replace('login.html');
+            }
+        })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="jml-store-icon.svg">
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,6 +87,8 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="style.css">
+    <!-- Admin Authentication Module -->
+    <script src="auth.js?v=2.1"></script>
     <!-- Custom Script -->
     <script src="script.js" defer></script>
 </head>
@@ -150,12 +178,12 @@
         <!-- Admin User Profile Card -->
         <div class="p-3 border-t border-neutral-200">
             <div class="flex items-center gap-3 p-2 rounded-lg bg-neutral-50 border border-neutral-200">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="Super Admin Avatar" class="w-9 h-9 rounded-full object-cover border border-neutral-200 shrink-0">
+                <img id="adminProfileAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80" alt="Super Admin Avatar" class="w-9 h-9 rounded-full object-cover border border-neutral-200 shrink-0">
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-semibold text-neutral-900 truncate">Hoàng Nam (Super Admin)</p>
-                    <p class="text-[11px] text-neutral-500 truncate">Ban Quản Trị Sàn</p>
+                    <p id="adminProfileName" class="text-xs font-semibold text-neutral-900 truncate">Hoàng Nam (Super Admin)</p>
+                    <p id="adminProfileRole" class="text-[11px] text-neutral-500 truncate">Ban Quản Trị Sàn</p>
                 </div>
-                <button title="Đăng xuất" class="p-1.5 text-neutral-500 hover:text-danger-500 hover:bg-white rounded transition-colors shrink-0">
+                <button id="adminLogoutBtn" onclick="performAdminLogout(true)" title="Đăng xuất tài khoản quản trị" class="p-1.5 text-neutral-500 hover:text-danger-500 hover:bg-white rounded transition-colors shrink-0">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -182,6 +210,12 @@
                     <i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
                     <span>Quỹ giữ hộ (Escrow): <strong>$142,890.00</strong></span>
                 </div>
+
+                <!-- Admin Auth Portal Link / Switch Account -->
+                <a href="login.html" title="Trang Đăng Nhập & Đăng Ký Hệ Thống Quản Trị" class="inline-flex items-center gap-1.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold px-3 py-2 rounded-lg text-xs transition-colors whitespace-nowrap border border-neutral-200">
+                    <i data-lucide="user-cog" class="w-4 h-4 text-primary-500 shrink-0"></i>
+                    <span class="hidden sm:inline">Cổng Đăng Nhập / Đăng Ký</span>
+                </a>
 
                 <!-- Switch to Shops Tab Button -->
                 <button onclick="switchTab('view-shops')" class="inline-flex items-center gap-1.5 bg-warning-50 hover:bg-amber-100 text-warning-500 border border-amber-200 font-semibold px-3 py-2 rounded-lg text-xs transition-colors whitespace-nowrap">
@@ -1348,6 +1382,177 @@
                 </button>
                 <button onclick="saveCampaign()" class="px-4 py-2 rounded-lg bg-primary-500 text-xs font-semibold text-white hover:bg-primary-600 shadow-sm">
                     Phát hành Chiến dịch
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: XÁC THỰC QUẢN TRỊ VIÊN (ĐĂNG NHẬP & ĐĂNG KÝ ADMIN) -->
+    <div id="adminAuthModal" class="fixed inset-0 bg-neutral-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl border border-neutral-200 shadow-2xl w-full max-w-lg max-h-[92vh] flex flex-col overflow-hidden">
+            <!-- Modal Header -->
+            <div class="p-4 sm:p-5 border-b border-neutral-200 flex items-center justify-between bg-neutral-50">
+                <div class="flex items-center gap-3">
+                    <img src="jml-store-icon.svg" alt="JML Store" class="w-9 h-9 object-contain">
+                    <div>
+                        <h2 class="text-sm font-bold text-neutral-900 leading-tight">Cổng Xác Thực Quản Trị Hệ Thống</h2>
+                        <p class="text-[11px] text-neutral-500">Đăng nhập hoặc đăng ký tài khoản cán bộ vận hành Sàn</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminAuthModal()" title="Đóng modal" class="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-lg hover:bg-neutral-200 transition-colors">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Modal Tab Switching -->
+            <div class="flex border-b border-neutral-200 px-5 pt-2 bg-white">
+                <button id="modalTabBtnLogin" onclick="switchModalAuthTab('login')" class="pb-2.5 px-3 text-xs font-bold border-b-2 border-primary-500 text-primary-500 transition-all flex items-center gap-1.5">
+                    <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+                    <span>Đăng Nhập</span>
+                </button>
+                <button id="modalTabBtnRegister" onclick="switchModalAuthTab('register')" class="pb-2.5 px-3 text-xs font-semibold border-b-2 border-transparent text-neutral-500 hover:text-neutral-900 transition-all flex items-center gap-1.5">
+                    <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                    <span>Đăng Ký Mới</span>
+                </button>
+            </div>
+
+            <!-- Modal Body Content -->
+            <div class="p-5 overflow-y-auto custom-scrollbar flex-1">
+                <!-- Alert Box -->
+                <div id="modalAuthAlert" class="hidden mb-4 p-3 rounded-lg text-xs font-medium flex items-start gap-2">
+                    <i id="modalAuthAlertIcon" data-lucide="alert-circle" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                    <div id="modalAuthAlertText" class="flex-1"></div>
+                </div>
+
+                <!-- VIEW 1: ĐĂNG NHẬP TRONG MODAL -->
+                <div id="modalLoginView" class="space-y-4">
+                    <form onsubmit="submitModalLogin(event)" class="space-y-3.5">
+                        <div>
+                            <label class="block text-xs font-semibold text-neutral-700 mb-1">Email công vụ hoặc Tên đăng nhập</label>
+                            <input id="modalLoginId" type="text" value="admin@jmlstore.com" placeholder="admin@jmlstore.com hoặc admin" required
+                                class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-3 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="text-xs font-semibold text-neutral-700">Mật khẩu</label>
+                                <span class="text-[10px] text-neutral-400">Mật khẩu mẫu: <strong class="text-primary-500">123</strong></span>
+                            </div>
+                            <input id="modalLoginPass" type="password" value="123" placeholder="Nhập mật khẩu" required
+                                class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-3 py-2 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs">
+                            <label class="flex items-center gap-1.5 cursor-pointer select-none">
+                                <input id="modalLoginRemember" type="checkbox" checked class="w-3.5 h-3.5 text-primary-500 rounded border-neutral-300">
+                                <span class="text-neutral-600 text-[11px]">Ghi nhớ đăng nhập</span>
+                            </label>
+                            <a href="login.html" class="text-[11px] text-primary-500 hover:underline">Mở trang đầy đủ &rarr;</a>
+                        </div>
+
+                        <button id="modalLoginBtn" type="submit" class="w-full py-2 px-4 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5">
+                            <i data-lucide="log-in" class="w-4 h-4"></i>
+                            <span>Đăng Nhập Vào Hệ Thống</span>
+                        </button>
+                    </form>
+
+                    <!-- 1-Click Fast Login -->
+                    <div class="pt-3 border-t border-neutral-200 space-y-2">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-500">⚡ Đăng nhập nhanh 1-Click:</span>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button type="button" onclick="quickModalLogin('admin')" class="p-2 rounded-lg bg-neutral-50 hover:bg-primary-50 border border-neutral-200 text-left transition-colors">
+                                <div class="text-[11px] font-bold text-neutral-900">👑 Super Admin</div>
+                                <div class="text-[9px] text-neutral-500 truncate">Hoàng Nam</div>
+                            </button>
+                            <button type="button" onclick="quickModalLogin('mod')" class="p-2 rounded-lg bg-neutral-50 hover:bg-primary-50 border border-neutral-200 text-left transition-colors">
+                                <div class="text-[11px] font-bold text-neutral-900">🛡️ Kiểm Duyệt</div>
+                                <div class="text-[9px] text-neutral-500 truncate">Hải Đăng</div>
+                            </button>
+                            <button type="button" onclick="quickModalLogin('finance')" class="p-2 rounded-lg bg-neutral-50 hover:bg-primary-50 border border-neutral-200 text-left transition-colors">
+                                <div class="text-[11px] font-bold text-neutral-900">💰 Kế Toán</div>
+                                <div class="text-[9px] text-neutral-500 truncate">Thuỳ Dung</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: ĐĂNG KÝ TRONG MODAL -->
+                <div id="modalRegisterView" class="hidden space-y-3.5">
+                    <form onsubmit="submitModalRegister(event)" class="space-y-3">
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-xs font-semibold text-neutral-700 mb-1">Họ và tên *</label>
+                                <input id="modalRegName" type="text" placeholder="VD: Lê Minh Khôi" required
+                                    class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-neutral-700 mb-1">Tên đăng nhập *</label>
+                                <input id="modalRegUser" type="text" placeholder="VD: khoilm" required
+                                    class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-neutral-700 mb-1">Email công vụ *</label>
+                            <input id="modalRegEmail" type="email" placeholder="VD: khoilm@jmlstore.com" required
+                                class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-xs font-semibold text-neutral-700 mb-1">Vai trò *</label>
+                                <select id="modalRegRole" class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-2 py-1.5 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                    <option value="Super Admin">Super Admin</option>
+                                    <option value="Quản Trị Viên Vận Hành" selected>Quản Trị Vận Hành</option>
+                                    <option value="Kiểm Duyệt Viên">Kiểm Duyệt Viên</option>
+                                    <option value="Kế Toán & Đối Soát">Kế Toán Escrow</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-neutral-700 mb-1">Phòng ban</label>
+                                <input id="modalRegDept" type="text" value="Ban Quản Trị Sàn JML"
+                                    class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-xs font-semibold text-neutral-700 mb-1">Mật khẩu (≥6 ký tự) *</label>
+                                <input id="modalRegPass" type="password" placeholder="Nhập mật khẩu" required
+                                    class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-neutral-700 mb-1">Xác nhận mật khẩu *</label>
+                                <input id="modalRegConfirm" type="password" placeholder="Nhập lại mật khẩu" required
+                                    class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="text-xs font-semibold text-neutral-700">Mã cấp quyền Admin</label>
+                                <span class="text-[10px] text-neutral-400">Mã: <strong class="text-primary-500">JML-ADMIN-2026</strong></span>
+                            </div>
+                            <input id="modalRegSecret" type="text" value="JML-ADMIN-2026"
+                                class="w-full bg-neutral-50 border border-neutral-200 rounded-lg px-2.5 py-1.5 text-xs font-mono uppercase focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-500">
+                        </div>
+
+                        <button id="modalRegBtn" type="submit" class="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-all flex items-center justify-center gap-1.5">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i>
+                            <span>Tạo Tài Khoản & Đăng Nhập</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-3.5 border-t border-neutral-200 bg-neutral-50 flex items-center justify-between text-xs">
+                <a href="login.html" class="text-primary-500 hover:text-primary-700 font-medium inline-flex items-center gap-1">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    <span>Mở trang Đăng nhập toàn màn hình</span>
+                </a>
+                <button onclick="closeAdminAuthModal()" class="px-3 py-1.5 rounded-lg border border-neutral-200 bg-white hover:bg-neutral-100 text-neutral-700 text-[11px] font-semibold transition-colors">
+                    Bỏ qua & Xem trang (Khách)
                 </button>
             </div>
         </div>
