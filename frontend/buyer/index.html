@@ -1814,6 +1814,149 @@
       }
 
       /* ==========================================================================
+         12B. TRẠNG THÁI ĐANG TẢI (SKELETON), LỖI (ERROR) & RỖNG (EMPTY) - TF1745E
+         ========================================================================== */
+      @keyframes jmlShimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+
+      .skeleton-block {
+        background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+        background-size: 200% 100%;
+        animation: jmlShimmer 1.4s infinite linear;
+        border-radius: 8px;
+      }
+
+      .skeleton-block.dark {
+        background: linear-gradient(90deg, rgba(255,255,255,0.08) 25%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.08) 75%);
+        background-size: 200% 100%;
+      }
+
+      .skeleton-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .skeleton-card.dark {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+
+      .section-state-box {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-height: 220px;
+        border-radius: var(--radius-lg);
+        border: 1px dashed #cbd5e1;
+        background: #ffffff;
+        padding: 36px 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 10px;
+      }
+
+      .section-state-box.is-dark {
+        background: rgba(15, 23, 42, 0.65);
+        border-color: rgba(255, 255, 255, 0.25);
+        color: #f8fafc;
+        height: 100%;
+      }
+
+      .section-state-box.is-error {
+        border-color: #fecaca;
+        background: #fff5f5;
+      }
+
+      .section-state-box.is-dark.is-error {
+        background: rgba(127, 29, 29, 0.55);
+        border-color: rgba(254, 202, 202, 0.35);
+      }
+
+      .state-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+      }
+
+      .is-error .state-icon {
+        background: #fee2e2;
+      }
+
+      .is-dark .state-icon {
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .state-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--secondary);
+      }
+
+      .is-dark .state-title {
+        color: #ffffff;
+      }
+
+      .state-desc {
+        font-size: 13.5px;
+        color: var(--text-muted);
+        max-width: 460px;
+        line-height: 1.5;
+      }
+
+      .is-dark .state-desc {
+        color: #e2e8f0;
+      }
+
+      .btn-retry {
+        margin-top: 6px;
+        padding: 10px 20px;
+        border-radius: var(--radius-md);
+        background: var(--primary-gradient);
+        color: #ffffff;
+        font-size: 13.5px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+        transition: var(--transition);
+      }
+
+      .btn-retry:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35);
+      }
+
+      .spinner-ring {
+        width: 34px;
+        height: 34px;
+        border: 3px solid rgba(255, 255, 255, 0.25);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: jmlSpin 0.8s linear infinite;
+      }
+
+      @keyframes jmlSpin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* ==========================================================================
          13. RESPONSIVE DESIGN (MEDIA QUERIES)
          ========================================================================== */
       @media (max-width: 1024px) {
@@ -1957,6 +2100,7 @@
           <li><a href="products.html">Sản Phẩm</a></li>
           <li><a href="#flash-sale">Flash Sale <span class="nav-hot-badge">HOT</span></a></li>
           <li><a href="#featured">Sản Phẩm Nổi Bật</a></li>
+          <li><a href="#latest">Mới Nhất</a></li>
           <li><a href="#promo">Ưu Đãi Đặc Quyền</a></li>
           <li><a href="#reviews">Đánh Giá</a></li>
           <li><a href="#footer">Liên Hệ</a></li>
@@ -1978,120 +2122,36 @@
            ==================================================================== -->
       <section class="hero-section">
         <div class="hero-grid">
-          <!-- Main Interactive Carousel Slider -->
+          <!-- Main Interactive Carousel Slider (Nạp từ API /api/homepage/banners) -->
           <div class="main-slider" id="mainSlider">
-            <!-- Slide 1: Audio & Tech -->
-            <div class="slide slide-1 active">
-              <div class="slide-content">
-                <span class="slide-tag">🔥 SIÊU SALE CÔNG NGHỆ 2026</span>
-                <h1 class="slide-title">Trải Nghiệm Đỉnh Cao Âm Thanh Studio</h1>
-                <p class="slide-desc">
-                  Thưởng thức âm thanh chuẩn Hi-Res Audio với tai nghe chống ồn chủ động cao cấp. Giảm ngay 35% duy nhất tuần này!
-                </p>
-                <div class="slide-actions">
-                  <a href="#featured" class="btn-hero-primary">
-                    Khám Phá Ngay
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </a>
-                  <a href="products.html" class="btn-hero-outline">Xem Danh Mục</a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Slide 2: Luxury Watches -->
-            <div class="slide slide-2">
-              <div class="slide-content">
-                <span class="slide-tag">⌚ ĐỒNG HỒ TINH HOA THỤY SĨ</span>
-                <h2 class="slide-title">Khẳng Định Đẳng Cấp & Thời Khắc Sang Trọng</h2>
-                <p class="slide-desc">
-                  Bộ sưu tập đồng hồ cơ Automatic Chronograph phiên bản giới hạn. Kính Sapphire chống trầy, bảo hành quốc tế 5 năm.
-                </p>
-                <div class="slide-actions">
-                  <a href="#featured" class="btn-hero-primary">
-                    Xem Bộ Sưu Tập
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </a>
-                  <a href="products.html" class="btn-hero-outline">Tìm Hiểu Thêm</a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Slide 3: Fashion -->
-            <div class="slide slide-3">
-              <div class="slide-content">
-                <span class="slide-tag">✨ TUẦN LỄ THỜI TRANG 2026</span>
-                <h2 class="slide-title">Phong Cách Thời Thượng Dẫn Đầu Xu Hướng</h2>
-                <p class="slide-desc">
-                  Áo măng tô dạ lông cừu, vest may đo và phụ kiện da cao cấp phong cách châu Âu. Ưu đãi độc quyền giảm tới 40%!
-                </p>
-                <div class="slide-actions">
-                  <a href="#featured" class="btn-hero-primary">
-                    Săn Deal Ngay
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </a>
-                  <a href="products.html" class="btn-hero-outline">Xem Tất Cả</a>
-                </div>
+            <div id="bannerSlidesContainer" style="position: relative; width: 100%; height: 100%;">
+              <div class="section-state-box is-dark is-loading" style="border-radius: 0; border: none;">
+                <div class="spinner-ring"></div>
+                <div class="state-title">Đang tải banner trang chủ...</div>
+                <div class="state-desc">Đang kết nối máy chủ để lấy các chương trình ưu đãi mới nhất.</div>
               </div>
             </div>
 
             <!-- Slider Navigation Buttons -->
-            <button class="slider-btn slider-prev" onclick="changeSlide(-1)" aria-label="Slide trước">
+            <button class="slider-btn slider-prev" id="sliderPrevBtn" onclick="changeSlide(-1)" aria-label="Slide trước" style="display: none;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="15 18 9 12 15 6"></polyline>
               </svg>
             </button>
-            <button class="slider-btn slider-next" onclick="changeSlide(1)" aria-label="Slide tiếp theo">
+            <button class="slider-btn slider-next" id="sliderNextBtn" onclick="changeSlide(1)" aria-label="Slide tiếp theo" style="display: none;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
             </button>
 
             <!-- Slider Indicators -->
-            <div class="slider-dots" id="sliderDots">
-              <div class="slider-dot active" onclick="setSlide(0)"></div>
-              <div class="slider-dot" onclick="setSlide(1)"></div>
-              <div class="slider-dot" onclick="setSlide(2)"></div>
-            </div>
+            <div class="slider-dots" id="sliderDots"></div>
           </div>
 
-          <!-- 2 Sub-Banners -->
-          <div class="side-banners">
-            <div class="side-banner-card side-banner-1">
-              <div class="side-banner-content">
-                <span class="side-banner-tag">BST SNEAKER RETRO</span>
-                <h3 class="side-banner-title">Phong Cách Đường Phố Đột Phá</h3>
-                <a href="products.html" class="side-banner-link">
-                  Khám phá ngay
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-            <div class="side-banner-card side-banner-2">
-              <div class="side-banner-content">
-                <span class="side-banner-tag">PHỤ KIỆN DA THỦ CÔNG</span>
-                <h3 class="side-banner-title">Túi Xách & Ví Da Thật Nhập Khẩu</h3>
-                <a href="products.html" class="side-banner-link">
-                  Xem bộ sưu tập
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
-              </div>
-            </div>
+          <!-- 2 Sub-Banners (Nạp động từ API banner) -->
+          <div class="side-banners" id="sideBannersContainer">
+            <div class="side-banner-card skeleton-block" style="background-image: none; min-height: 190px;"></div>
+            <div class="side-banner-card skeleton-block" style="background-image: none; min-height: 190px;"></div>
           </div>
         </div>
       </section>
@@ -2150,63 +2210,7 @@
           </a>
         </div>
 
-        <div class="category-grid">
-          <!-- Category 1 -->
-          <div class="category-card" onclick="filterByCategory('audio')">
-            <div class="category-icon-wrapper">🎧</div>
-            <h3 class="category-name">Thiết Bị Âm Thanh</h3>
-            <span class="category-count">128+ sản phẩm</span>
-          </div>
-
-          <!-- Category 2 -->
-          <div class="category-card" onclick="filterByCategory('watch')">
-            <div class="category-icon-wrapper">⌚</div>
-            <h3 class="category-name">Đồng Hồ Hiệu</h3>
-            <span class="category-count">94+ sản phẩm</span>
-          </div>
-
-          <!-- Category 3 -->
-          <div class="category-card" onclick="filterByCategory('phone')">
-            <div class="category-icon-wrapper">📱</div>
-            <h3 class="category-name">Điện Thoại & Tablet</h3>
-            <span class="category-count">186+ sản phẩm</span>
-          </div>
-
-          <!-- Category 4 -->
-          <div class="category-card" onclick="filterByCategory('laptop')">
-            <div class="category-icon-wrapper">💻</div>
-            <h3 class="category-name">Laptop Siêu Mỏng</h3>
-            <span class="category-count">75+ sản phẩm</span>
-          </div>
-
-          <!-- Category 5 -->
-          <div class="category-card" onclick="filterByCategory('fashion-men')">
-            <div class="category-icon-wrapper">👔</div>
-            <h3 class="category-name">Thời Trang Nam</h3>
-            <span class="category-count">210+ sản phẩm</span>
-          </div>
-
-          <!-- Category 6 -->
-          <div class="category-card" onclick="filterByCategory('fashion-women')">
-            <div class="category-icon-wrapper">👗</div>
-            <h3 class="category-name">Thời Trang Nữ</h3>
-            <span class="category-count">315+ sản phẩm</span>
-          </div>
-
-          <!-- Category 7 -->
-          <div class="category-card" onclick="filterByCategory('shoes')">
-            <div class="category-icon-wrapper">👟</div>
-            <h3 class="category-name">Giày & Sneaker</h3>
-            <span class="category-count">142+ sản phẩm</span>
-          </div>
-
-          <!-- Category 8 -->
-          <div class="category-card" onclick="filterByCategory('bags')">
-            <div class="category-icon-wrapper">👜</div>
-            <h3 class="category-name">Túi Xách & Đồ Da</h3>
-            <span class="category-count">98+ sản phẩm</span>
-          </div>
-        </div>
+        <div class="category-grid" id="categoryGrid"></div>
       </section>
 
       <!-- ====================================================================
@@ -2230,95 +2234,7 @@
           </div>
         </div>
 
-        <div class="flash-grid">
-          <!-- Flash Item 1 -->
-          <div class="flash-card">
-            <div class="flash-img-box">
-              <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" alt="Sony WH-1000XM5" />
-              <span class="discount-ribbon">-22%</span>
-            </div>
-            <h3 class="flash-prod-title">Tai Nghe Chống Ồn Không Dây Sony WH-1000XM5</h3>
-            <div class="flash-price-row">
-              <span class="current-price">6.990.000 ₫</span>
-              <span class="old-price">8.990.000 ₫</span>
-            </div>
-            <div class="deal-progress-box">
-              <div class="progress-track">
-                <div class="progress-bar" style="width: 82%;"></div>
-              </div>
-              <div class="deal-sold-text">
-                <span>🔥 Đã bán 82/100</span>
-                <span>Chỉ còn 18 cái</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Flash Item 2 -->
-          <div class="flash-card">
-            <div class="flash-img-box">
-              <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80" alt="Apple Watch Ultra" />
-              <span class="discount-ribbon">-18%</span>
-            </div>
-            <h3 class="flash-prod-title">Đồng Hồ Thông Minh Apple Watch Ultra 2 Titanium 49mm</h3>
-            <div class="flash-price-row">
-              <span class="current-price">18.490.000 ₫</span>
-              <span class="old-price">22.490.000 ₫</span>
-            </div>
-            <div class="deal-progress-box">
-              <div class="progress-track">
-                <div class="progress-bar" style="width: 65%;"></div>
-              </div>
-              <div class="deal-sold-text">
-                <span>🔥 Đã bán 65/100</span>
-                <span>Chỉ còn 35 cái</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Flash Item 3 -->
-          <div class="flash-card">
-            <div class="flash-img-box">
-              <img src="https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=600&q=80" alt="Marshall Stanmore III" />
-              <span class="discount-ribbon">-25%</span>
-            </div>
-            <h3 class="flash-prod-title">Loa Bluetooth Cao Cấp Marshall Stanmore III Chính Hãng</h3>
-            <div class="flash-price-row">
-              <span class="current-price">7.890.000 ₫</span>
-              <span class="old-price">10.490.000 ₫</span>
-            </div>
-            <div class="deal-progress-box">
-              <div class="progress-track">
-                <div class="progress-bar" style="width: 90%;"></div>
-              </div>
-              <div class="deal-sold-text">
-                <span>🔥 Đã bán 90/100</span>
-                <span>Sắp cháy hàng</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Flash Item 4 -->
-          <div class="flash-card">
-            <div class="flash-img-box">
-              <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=600&q=80" alt="Nike Jordan 1" />
-              <span class="discount-ribbon">-30%</span>
-            </div>
-            <h3 class="flash-prod-title">Giày Thể Thao Sneaker Nike Air Jordan 1 Retro High OG</h3>
-            <div class="flash-price-row">
-              <span class="current-price">3.490.000 ₫</span>
-              <span class="old-price">4.990.000 ₫</span>
-            </div>
-            <div class="deal-progress-box">
-              <div class="progress-track">
-                <div class="progress-bar" style="width: 74%;"></div>
-              </div>
-              <div class="deal-sold-text">
-                <span>🔥 Đã bán 74/100</span>
-                <span>Chỉ còn 26 đôi</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="flash-grid" id="flashGrid"></div>
       </section>
 
       <!-- ====================================================================
@@ -2339,417 +2255,45 @@
           </a>
         </div>
 
-        <!-- Filter Category Tabs -->
-        <div class="filter-tabs">
+        <!-- Filter Category Tabs (Nạp động từ API danh mục) -->
+        <div class="filter-tabs" id="featuredFilterTabs">
           <button class="tab-btn active" onclick="filterTab('all', this)">Tất Cả Sản Phẩm</button>
-          <button class="tab-btn" onclick="filterTab('tech', this)">💻 Thiết Bị Số &amp; PC</button>
-          <button class="tab-btn" onclick="filterTab('audio', this)">🎧 Âm Thanh Hi-End</button>
-          <button class="tab-btn" onclick="filterTab('watch', this)">⌚ Đồng Hồ Cao Cấp</button>
-          <button class="tab-btn" onclick="filterTab('fashion', this)">👔 Thời Trang &amp; Đồ Da</button>
         </div>
 
-        <!-- The Responsive Grid of 8 Featured Products with Mock Data -->
-        <div class="products-grid" id="productsGrid">
-          <!-- Product 1 -->
-          <article class="product-card" data-category="tech">
-            <div class="product-thumb">
-              <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80" alt="MacBook Pro M3" />
-              <div class="badge-group">
-                <span class="prod-badge badge-hot">HOT</span>
-                <span class="prod-badge badge-discount">-10%</span>
-              </div>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)" title="Yêu thích">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="product-body">
-              <div class="product-meta">
-                <span class="product-category">Apple Official</span>
-                <span>Đã bán 320+</span>
-              </div>
-              <h3 class="product-title">
-                <a href="products.html">Laptop Apple MacBook Pro 14 inch M3 Pro (18GB / 512GB SSD) Space Black</a>
-              </h3>
-              <div class="product-rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-count">5.0 (185)</span>
-              </div>
-              <div class="product-pricing">
-                <span class="current-price">48.990.000 ₫</span>
-                <span class="old-price">54.990.000 ₫</span>
-              </div>
-              <div class="product-actions">
-                <button class="btn-add-cart" onclick="addToCart('Laptop Apple MacBook Pro 14 M3 Pro', '48.990.000 ₫')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
-                  Thêm vào giỏ
-                </button>
-                <button class="btn-quick-view" onclick="quickView('Laptop Apple MacBook Pro 14 M3 Pro', '48.990.000 ₫', 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80', 'Apple M3 Pro 11-core CPU, 14-core GPU, màn hình Liquid Retina XDR 120Hz siêu nét.')" title="Xem nhanh">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Product 2 -->
-          <article class="product-card" data-category="audio">
-            <div class="product-thumb">
-              <img src="https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=600&q=80" alt="AirPods Max" />
-              <div class="badge-group">
-                <span class="prod-badge badge-new">MỚI</span>
-                <span class="prod-badge badge-discount">-12%</span>
-              </div>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)" title="Yêu thích">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="product-body">
-              <div class="product-meta">
-                <span class="product-category">Apple Sound</span>
-                <span>Đã bán 450+</span>
-              </div>
-              <h3 class="product-title">
-                <a href="products.html">Tai Nghe Chụp Tai Apple AirPods Max 2024 Cổng Sạc Type-C Midnight</a>
-              </h3>
-              <div class="product-rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-count">4.9 (214)</span>
-              </div>
-              <div class="product-pricing">
-                <span class="current-price">12.890.000 ₫</span>
-                <span class="old-price">14.690.000 ₫</span>
-              </div>
-              <div class="product-actions">
-                <button class="btn-add-cart" onclick="addToCart('Tai Nghe Apple AirPods Max 2024 Type-C', '12.890.000 ₫')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
-                  Thêm vào giỏ
-                </button>
-                <button class="btn-quick-view" onclick="quickView('Tai Nghe Apple AirPods Max 2024 Type-C', '12.890.000 ₫', 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=600&q=80', 'Công nghệ chống ồn ANC chủ động thông minh, âm thanh vòm Spatial Audio với tính năng theo dõi đầu sống động.')" title="Xem nhanh">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Product 3 -->
-          <article class="product-card" data-category="watch">
-            <div class="product-thumb">
-              <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80" alt="Tissot Watch" />
-              <div class="badge-group">
-                <span class="prod-badge badge-discount">-15%</span>
-              </div>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)" title="Yêu thích">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="product-body">
-              <div class="product-meta">
-                <span class="product-category">Tissot Swiss</span>
-                <span>Đã bán 110+</span>
-              </div>
-              <h3 class="product-title">
-                <a href="products.html">Đồng Hồ Cơ Nam Tissot Le Locle Powermatic 80 Dây Kim Loại Bạc Thụy Sĩ</a>
-              </h3>
-              <div class="product-rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-count">4.8 (89)</span>
-              </div>
-              <div class="product-pricing">
-                <span class="current-price">14.850.000 ₫</span>
-                <span class="old-price">17.500.000 ₫</span>
-              </div>
-              <div class="product-actions">
-                <button class="btn-add-cart" onclick="addToCart('Đồng Hồ Nam Tissot Le Locle Powermatic 80', '14.850.000 ₫')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
-                  Thêm vào giỏ
-                </button>
-                <button class="btn-quick-view" onclick="quickView('Đồng Hồ Nam Tissot Le Locle Powermatic 80', '14.850.000 ₫', 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80', 'Bộ máy cơ Thụy Sĩ Powermatic 80 trữ cót lên đến 80 giờ liên tục, mặt số guilloche tinh xảo.')" title="Xem nhanh">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Product 4 -->
-          <article class="product-card" data-category="tech">
-            <div class="product-thumb">
-              <img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=600&q=80" alt="iPhone 16 Pro Max" />
-              <div class="badge-group">
-                <span class="prod-badge badge-hot">HOT</span>
-                <span class="prod-badge badge-discount">-8%</span>
-              </div>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)" title="Yêu thích">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="product-body">
-              <div class="product-meta">
-                <span class="product-category">Apple Mobile</span>
-                <span>Đã bán 780+</span>
-              </div>
-              <h3 class="product-title">
-                <a href="products.html">Điện Thoại Apple iPhone 16 Pro Max 256GB Titan Sa Mạc VN/A Chính Hãng</a>
-              </h3>
-              <div class="product-rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-count">5.0 (520)</span>
-              </div>
-              <div class="product-pricing">
-                <span class="current-price">34.490.000 ₫</span>
-                <span class="old-price">37.490.000 ₫</span>
-              </div>
-              <div class="product-actions">
-                <button class="btn-add-cart" onclick="addToCart('Điện Thoại Apple iPhone 16 Pro Max 256GB', '34.490.000 ₫')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
-                  Thêm vào giỏ
-                </button>
-                <button class="btn-quick-view" onclick="quickView('Apple iPhone 16 Pro Max 256GB Titan Sa Mạc', '34.490.000 ₫', 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=600&q=80', 'Khung viền Titanium cấp hàng không vũ trụ, chip A18 Pro mạnh mẽ vượt bậc, camera zoom quang học 5x sắc nét.')" title="Xem nhanh">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Product 5 -->
-          <article class="product-card" data-category="fashion">
-            <div class="product-thumb">
-              <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80" alt="Leather Bag" />
-              <div class="badge-group">
-                <span class="prod-badge badge-discount">-25%</span>
-              </div>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)" title="Yêu thích">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="product-body">
-              <div class="product-meta">
-                <span class="product-category">JML Leather</span>
-                <span>Đã bán 140+</span>
-              </div>
-              <h3 class="product-title">
-                <a href="products.html">Túi Xách Da Bò Sáp Thật Phong Cách Retro Cổ Điển Nhập Khẩu Italia</a>
-              </h3>
-              <div class="product-rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-count">4.9 (98)</span>
-              </div>
-              <div class="product-pricing">
-                <span class="current-price">2.450.000 ₫</span>
-                <span class="old-price">3.250.000 ₫</span>
-              </div>
-              <div class="product-actions">
-                <button class="btn-add-cart" onclick="addToCart('Túi Xách Da Bò Sáp Thật Retro JML', '2.450.000 ₫')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
-                  Thêm vào giỏ
-                </button>
-                <button class="btn-quick-view" onclick="quickView('Túi Xách Da Bò Sáp Thật Retro JML', '2.450.000 ₫', 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80', 'Gia công thủ công tỉ mỉ bằng chất liệu da bò sáp nguyên tấm, càng dùng da càng bóng và mềm mịn.')" title="Xem nhanh">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Product 6 -->
-          <article class="product-card" data-category="fashion">
-            <div class="product-thumb">
-              <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80" alt="Wool Coat" />
-              <div class="badge-group">
-                <span class="prod-badge badge-new">MỚI</span>
-                <span class="prod-badge badge-discount">-20%</span>
-              </div>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)" title="Yêu thích">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="product-body">
-              <div class="product-meta">
-                <span class="product-category">JML Fashion</span>
-                <span>Đã bán 230+</span>
-              </div>
-              <h3 class="product-title">
-                <a href="products.html">Áo Khoác Măng Tô Nam Dạ Wool Dáng Dài Cao Cấp Phong Cách Hàn Quốc</a>
-              </h3>
-              <div class="product-rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-count">4.8 (115)</span>
-              </div>
-              <div class="product-pricing">
-                <span class="current-price">2.850.000 ₫</span>
-                <span class="old-price">3.550.000 ₫</span>
-              </div>
-              <div class="product-actions">
-                <button class="btn-add-cart" onclick="addToCart('Áo Khoác Măng Tô Nam Dạ Wool Dáng Dài', '2.850.000 ₫')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
-                  Thêm vào giỏ
-                </button>
-                <button class="btn-quick-view" onclick="quickView('Áo Khoác Măng Tô Nam Dạ Wool Dáng Dài', '2.850.000 ₫', 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80', 'Chất liệu dạ lông cừu ép nhiệt dày dặn, giữ ấm vượt trội, phom dáng tôn vóc dáng chuẩn nam tính.')" title="Xem nhanh">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Product 7 -->
-          <article class="product-card" data-category="audio">
-            <div class="product-thumb">
-              <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80" alt="Sony Headphones" />
-              <div class="badge-group">
-                <span class="prod-badge badge-hot">HOT</span>
-                <span class="prod-badge badge-discount">-16%</span>
-              </div>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)" title="Yêu thích">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="product-body">
-              <div class="product-meta">
-                <span class="product-category">Sony Audio</span>
-                <span>Đã bán 590+</span>
-              </div>
-              <h3 class="product-title">
-                <a href="products.html">Tai Nghe Chống Ồn Cao Cấp Sony WH-1000XM4 Âm Bass Sâu Hi-Res</a>
-              </h3>
-              <div class="product-rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-count">4.9 (340)</span>
-              </div>
-              <div class="product-pricing">
-                <span class="current-price">5.490.000 ₫</span>
-                <span class="old-price">6.590.000 ₫</span>
-              </div>
-              <div class="product-actions">
-                <button class="btn-add-cart" onclick="addToCart('Tai Nghe Chống Ồn Sony WH-1000XM4', '5.490.000 ₫')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
-                  Thêm vào giỏ
-                </button>
-                <button class="btn-quick-view" onclick="quickView('Tai Nghe Chống Ồn Sony WH-1000XM4', '5.490.000 ₫', 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80', 'Pin sử dụng liên tục 30 giờ, chống ồn cá nhân hóa thông minh với vi xử lý HD QN1 chuyên biệt.')" title="Xem nhanh">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Product 8 -->
-          <article class="product-card" data-category="watch">
-            <div class="product-thumb">
-              <img src="https://images.unsplash.com/photo-1547996160-71dfabbce5fa?auto=format&fit=crop&w=600&q=80" alt="Seiko Presage" />
-              <div class="badge-group">
-                <span class="prod-badge badge-new">MỚI</span>
-              </div>
-              <button class="btn-wishlist" onclick="toggleWishlist(this)" title="Yêu thích">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </button>
-            </div>
-            <div class="product-body">
-              <div class="product-meta">
-                <span class="product-category">Seiko Japan</span>
-                <span>Đã bán 160+</span>
-              </div>
-              <h3 class="product-title">
-                <a href="products.html">Đồng Hồ Cơ Seiko Presage Cocktail Time Dây Da Nâu Sang Trọng</a>
-              </h3>
-              <div class="product-rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-count">4.8 (120)</span>
-              </div>
-              <div class="product-pricing">
-                <span class="current-price">9.800.000 ₫</span>
-                <span class="old-price">11.500.000 ₫</span>
-              </div>
-              <div class="product-actions">
-                <button class="btn-add-cart" onclick="addToCart('Đồng Hồ Cơ Seiko Presage Cocktail Time', '9.800.000 ₫')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                  </svg>
-                  Thêm vào giỏ
-                </button>
-                <button class="btn-quick-view" onclick="quickView('Đồng Hồ Cơ Seiko Presage Cocktail Time', '9.800.000 ₫', 'https://images.unsplash.com/photo-1547996160-71dfabbce5fa?auto=format&fit=crop&w=600&q=80', 'Mặt số vân tia hướng tâm lấy cảm hứng từ ly cocktail Blue Moon, kính vòm Hardlex đặc trưng của thương hiệu Seiko.')" title="Xem nhanh">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </article>
-        </div>
+        <!-- Lưới sản phẩm nổi bật (Nạp động từ API) -->
+        <div class="products-grid" id="productsGrid"></div>
 
         <!-- View More CTA -->
         <div class="view-more-box">
           <a href="products.html" class="btn-view-more">
-            <span>Xem Tất Cả 200+ Sản Phẩm</span>
+            <span>Xem Tất Cả Sản Phẩm</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </a>
         </div>
+      </section>
+
+      <!-- ====================================================================
+           4. LƯỚI SẢN PHẨM MỚI NHẤT (LATEST PRODUCTS GRID - API /api/homepage)
+           ==================================================================== -->
+      <section id="latest" class="featured-section">
+        <div class="section-heading-row">
+          <div class="section-title-box">
+            <span class="section-badge">HÀNG MỚI VỀ</span>
+            <h2 class="section-title">Sản Phẩm Mới Nhất</h2>
+          </div>
+          <a href="products.html" class="section-view-all">
+            Xem tất cả hàng mới
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
+
+        <div class="products-grid" id="latestProductsGrid"></div>
       </section>
 
       <!-- ====================================================================
@@ -3012,24 +2556,726 @@
          JAVASCRIPT LOGIC & INTERACTIVITY
          ==================================================================== -->
     <script>
-      // 1. Interactive Slider Carousel
+      // ====================================================================
+      // 0. CẤU HÌNH API & STATE TRANG CHỦ (TF1745E)
+      // ====================================================================
+      const urlParams = new URLSearchParams(window.location.search);
+      const API_BASE_URL =
+        urlParams.get('api') ||
+        localStorage.getItem('JML_API_BASE_URL') ||
+        (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost'
+          ? 'http://127.0.0.1:8000'
+          : '');
+
+      const FALLBACK_PRODUCT_IMG =
+        'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80';
+      const FALLBACK_BANNER_IMG =
+        'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1200&q=80';
+
+      let featuredProductsData = [];
+      let latestProductsData = [];
+      let flashProductsData = [];
+      let categoriesData = [];
+      let productLookupMap = {};
+      let activeFeaturedCategory = 'all';
+
+      function escapeHtml(str) {
+        return String(str ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function formatPriceVND(value) {
+        const num = Number(value) || 0;
+        return num.toLocaleString('vi-VN') + ' ₫';
+      }
+
+      function normalizeProduct(raw) {
+        const images = Array.isArray(raw.images)
+          ? raw.images
+          : raw.image_url
+          ? [raw.image_url]
+          : raw.image
+          ? [raw.image]
+          : [];
+        return {
+          id: raw.id,
+          category: raw.category || 'other',
+          title: raw.title || 'Sản phẩm JML Store',
+          price: Number(raw.price) || 0,
+          originalPrice: Number(raw.originalPrice ?? raw.original_price ?? raw.price) || 0,
+          discount: raw.discount || '',
+          rating: Number(raw.rating ?? 5.0).toFixed(1),
+          sold: Number(raw.sold ?? raw.soldCount ?? 0),
+          totalStock: Number(raw.totalStock ?? raw.total_stock ?? 100),
+          image: images[0] || FALLBACK_PRODUCT_IMG,
+          exclusive: raw.exclusive || 'Chính Hãng',
+          shopName: raw.shopName || raw.shop_name || 'JML Official Store',
+          isFlashSale: Boolean(raw.isFlashSale ?? raw.is_flash_sale),
+          description:
+            raw.description ||
+            `Sản phẩm chính hãng phân phối bởi ${raw.shopName || raw.shop_name || 'JML Official Store'}. Bảo hành đầy đủ và hỗ trợ đổi trả trong 30 ngày.`,
+        };
+      }
+
+      function registerProducts(list) {
+        list.forEach((p) => {
+          if (p && p.id !== undefined && p.id !== null) {
+            productLookupMap[String(p.id)] = p;
+          }
+        });
+      }
+
+      async function fetchJsonWithTimeout(url, timeoutMs = 8000) {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            headers: { Accept: 'application/json' },
+            signal: controller.signal,
+          });
+          if (!response.ok) {
+            const err = new Error(`Máy chủ trả về mã lỗi HTTP ${response.status}`);
+            err.status = response.status;
+            throw err;
+          }
+          return await response.json();
+        } catch (err) {
+          if (err.name === 'AbortError') {
+            throw new Error('Kết nối API quá thời gian chờ (Timeout)');
+          }
+          throw err;
+        } finally {
+          clearTimeout(timer);
+        }
+      }
+
+      // ====================================================================
+      // 1. TRẠNG THÁI LOADING / ERROR / EMPTY CHO TỪNG KHU VỰC
+      // ====================================================================
+      function renderSectionLoading(section) {
+        if (section === 'banners') {
+          const slidesEl = document.getElementById('bannerSlidesContainer');
+          const dotsEl = document.getElementById('sliderDots');
+          const sideEl = document.getElementById('sideBannersContainer');
+          const prevBtn = document.getElementById('sliderPrevBtn');
+          const nextBtn = document.getElementById('sliderNextBtn');
+          if (prevBtn) prevBtn.style.display = 'none';
+          if (nextBtn) nextBtn.style.display = 'none';
+          if (dotsEl) dotsEl.innerHTML = '';
+          if (slidesEl) {
+            slidesEl.innerHTML = `
+              <div class="section-state-box is-dark is-loading" style="border-radius: 0; border: none;">
+                <div class="spinner-ring"></div>
+                <div class="state-title">Đang tải banner ưu đãi...</div>
+                <div class="state-desc">Vui lòng đợi trong giây lát.</div>
+              </div>`;
+          }
+          if (sideEl) {
+            sideEl.innerHTML = `
+              <div class="side-banner-card skeleton-block" style="background-image: none; min-height: 190px;"></div>
+              <div class="side-banner-card skeleton-block" style="background-image: none; min-height: 190px;"></div>`;
+          }
+          return;
+        }
+
+        if (section === 'categories') {
+          const grid = document.getElementById('categoryGrid');
+          if (!grid) return;
+          grid.innerHTML = Array.from({ length: 4 })
+            .map(
+              () => `
+              <div class="skeleton-card" style="align-items: center;">
+                <div class="skeleton-block" style="width: 60px; height: 60px; border-radius: 50%;"></div>
+                <div class="skeleton-block" style="width: 80%; height: 14px;"></div>
+                <div class="skeleton-block" style="width: 55%; height: 11px;"></div>
+              </div>`
+            )
+            .join('');
+          return;
+        }
+
+        if (section === 'flash') {
+          const grid = document.getElementById('flashGrid');
+          if (!grid) return;
+          grid.innerHTML = Array.from({ length: 4 })
+            .map(
+              () => `
+              <div class="skeleton-card dark">
+                <div class="skeleton-block dark" style="width: 100%; height: 170px;"></div>
+                <div class="skeleton-block dark" style="width: 90%; height: 16px;"></div>
+                <div class="skeleton-block dark" style="width: 60%; height: 16px;"></div>
+                <div class="skeleton-block dark" style="width: 100%; height: 8px; margin-top: 6px;"></div>
+              </div>`
+            )
+            .join('');
+          return;
+        }
+
+        const gridId = section === 'latest' ? 'latestProductsGrid' : 'productsGrid';
+        const grid = document.getElementById(gridId);
+        if (!grid) return;
+        grid.innerHTML = Array.from({ length: 4 })
+          .map(
+            () => `
+            <div class="skeleton-card">
+              <div class="skeleton-block" style="width: 100%; height: 200px;"></div>
+              <div class="skeleton-block" style="width: 45%; height: 12px;"></div>
+              <div class="skeleton-block" style="width: 95%; height: 16px;"></div>
+              <div class="skeleton-block" style="width: 65%; height: 16px;"></div>
+              <div class="skeleton-block" style="width: 100%; height: 36px; margin-top: 6px;"></div>
+            </div>`
+          )
+          .join('');
+      }
+
+      function renderSectionError(section, errorMsg) {
+        const safeMsg = escapeHtml(errorMsg || 'Không thể kết nối đến máy chủ API.');
+        if (section === 'banners') {
+          const slidesEl = document.getElementById('bannerSlidesContainer');
+          const sideEl = document.getElementById('sideBannersContainer');
+          const prevBtn = document.getElementById('sliderPrevBtn');
+          const nextBtn = document.getElementById('sliderNextBtn');
+          const dotsEl = document.getElementById('sliderDots');
+          if (prevBtn) prevBtn.style.display = 'none';
+          if (nextBtn) nextBtn.style.display = 'none';
+          if (dotsEl) dotsEl.innerHTML = '';
+          if (slidesEl) {
+            slidesEl.innerHTML = `
+              <div class="section-state-box is-dark is-error" style="border-radius: 0; border: none;">
+                <div class="state-icon">⚠️</div>
+                <div class="state-title">Không tải được banner trang chủ</div>
+                <div class="state-desc">${safeMsg}</div>
+                <button class="btn-retry" onclick="retrySection('banners')">↻ Thử lại</button>
+              </div>`;
+          }
+          if (sideEl) {
+            sideEl.innerHTML = `
+              <div class="section-state-box is-error" style="min-height: 190px; padding: 20px;">
+                <div class="state-title" style="font-size: 14px;">Banner phụ chưa sẵn sàng</div>
+                <div class="state-desc" style="font-size: 12px;">${safeMsg}</div>
+              </div>`;
+          }
+          return;
+        }
+
+        const map = {
+          categories: { id: 'categoryGrid', title: 'Không tải được danh mục sản phẩm', dark: false },
+          flash: { id: 'flashGrid', title: 'Không tải được sản phẩm Flash Sale', dark: true },
+          featured: { id: 'productsGrid', title: 'Không tải được sản phẩm nổi bật', dark: false },
+          latest: { id: 'latestProductsGrid', title: 'Không tải được sản phẩm mới nhất', dark: false },
+        };
+        const cfg = map[section];
+        const el = cfg && document.getElementById(cfg.id);
+        if (!el) return;
+        el.innerHTML = `
+          <div class="section-state-box ${cfg.dark ? 'is-dark' : ''} is-error">
+            <div class="state-icon">⚠️</div>
+            <div class="state-title">${cfg.title}</div>
+            <div class="state-desc">${safeMsg}</div>
+            <button class="btn-retry" onclick="retrySection('${section}')">↻ Thử lại</button>
+          </div>`;
+      }
+
+      function renderSectionEmpty(section, customTitle, customDesc) {
+        if (section === 'banners') {
+          const slidesEl = document.getElementById('bannerSlidesContainer');
+          const sideEl = document.getElementById('sideBannersContainer');
+          const prevBtn = document.getElementById('sliderPrevBtn');
+          const nextBtn = document.getElementById('sliderNextBtn');
+          const dotsEl = document.getElementById('sliderDots');
+          if (prevBtn) prevBtn.style.display = 'none';
+          if (nextBtn) nextBtn.style.display = 'none';
+          if (dotsEl) dotsEl.innerHTML = '';
+          if (slidesEl) {
+            slidesEl.innerHTML = `
+              <div class="section-state-box is-dark is-empty" style="border-radius: 0; border: none;">
+                <div class="state-icon">🖼️</div>
+                <div class="state-title">${escapeHtml(customTitle || 'Chưa có banner nào đang hoạt động')}</div>
+                <div class="state-desc">${escapeHtml(customDesc || 'Các chương trình khuyến mãi và banner nổi bật sẽ sớm được cập nhật.')}</div>
+              </div>`;
+          }
+          if (sideEl) {
+            sideEl.innerHTML = `
+              <div class="section-state-box is-empty" style="min-height: 190px; padding: 20px;">
+                <div class="state-icon" style="width: 40px; height: 40px; font-size: 18px;">📢</div>
+                <div class="state-title" style="font-size: 14px;">Chưa có banner phụ</div>
+              </div>`;
+          }
+          return;
+        }
+
+        const defaults = {
+          categories: {
+            id: 'categoryGrid',
+            icon: '🗂️',
+            title: 'Chưa có danh mục hiển thị',
+            desc: 'Hiện chưa có ngành hàng nào được kích hoạt trên trang chủ.',
+            dark: false,
+          },
+          flash: {
+            id: 'flashGrid',
+            icon: '⚡',
+            title: 'Chưa có deal Flash Sale',
+            desc: 'Hiện tại không có sản phẩm nào đang mở bán Flash Sale.',
+            dark: true,
+          },
+          featured: {
+            id: 'productsGrid',
+            icon: '🛍️',
+            title: 'Chưa có sản phẩm nổi bật',
+            desc: 'Danh sách sản phẩm nổi bật hiện đang trống.',
+            dark: false,
+          },
+          latest: {
+            id: 'latestProductsGrid',
+            icon: '✨',
+            title: 'Chưa có sản phẩm mới nhất',
+            desc: 'Hiện chưa có sản phẩm mới nào được đăng bán.',
+            dark: false,
+          },
+        };
+        const cfg = defaults[section];
+        const el = cfg && document.getElementById(cfg.id);
+        if (!el) return;
+        el.innerHTML = `
+          <div class="section-state-box ${cfg.dark ? 'is-dark' : ''} is-empty">
+            <div class="state-icon">${cfg.icon}</div>
+            <div class="state-title">${escapeHtml(customTitle || cfg.title)}</div>
+            <div class="state-desc">${escapeHtml(customDesc || cfg.desc)}</div>
+          </div>`;
+      }
+
+      // ====================================================================
+      // 2. RENDER DỮ LIỆU TỪ API VÀO TỪNG KHU VỰC
+      // ====================================================================
       let currentSlide = 0;
-      const slides = document.querySelectorAll('.slide');
-      const dots = document.querySelectorAll('.slider-dot');
       let slideTimer = null;
 
+      function renderBanners(banners) {
+        clearInterval(slideTimer);
+        const slidesEl = document.getElementById('bannerSlidesContainer');
+        const dotsEl = document.getElementById('sliderDots');
+        const sideEl = document.getElementById('sideBannersContainer');
+        const prevBtn = document.getElementById('sliderPrevBtn');
+        const nextBtn = document.getElementById('sliderNextBtn');
+
+        if (!Array.isArray(banners) || banners.length === 0) {
+          renderSectionEmpty('banners');
+          return;
+        }
+
+        const heroBanners = banners.slice(0, Math.max(1, banners.length - 2));
+        const subBanners = banners.length > 2 ? banners.slice(-2) : [];
+
+        if (slidesEl) {
+          slidesEl.innerHTML = heroBanners
+            .map((b, idx) => {
+              const title = escapeHtml(b.title || 'Ưu đãi JML Store');
+              const desc = escapeHtml(b.description || 'Khám phá ngay các sản phẩm chính hãng với giá ưu đãi nhất.');
+              const imgUrl = escapeHtml(b.imageUrl || b.image_url || FALLBACK_BANNER_IMG);
+              const linkUrl = escapeHtml(b.linkUrl || b.link_url || 'products.html');
+              const HeadingTag = idx === 0 ? 'h1' : 'h2';
+              return `
+                <div class="slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${imgUrl}');">
+                  <div class="slide-content">
+                    <span class="slide-tag">✨ JML STORE BANNER #${idx + 1}</span>
+                    <${HeadingTag} class="slide-title">${title}</${HeadingTag}>
+                    <p class="slide-desc">${desc}</p>
+                    <div class="slide-actions">
+                      <a href="${linkUrl}" class="btn-hero-primary">
+                        Khám Phá Ngay
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                          <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                      </a>
+                      <a href="products.html" class="btn-hero-outline">Xem Danh Mục</a>
+                    </div>
+                  </div>
+                </div>`;
+            })
+            .join('');
+        }
+
+        const showControls = heroBanners.length > 1;
+        if (prevBtn) prevBtn.style.display = showControls ? 'flex' : 'none';
+        if (nextBtn) nextBtn.style.display = showControls ? 'flex' : 'none';
+        if (dotsEl) {
+          dotsEl.innerHTML = showControls
+            ? heroBanners
+                .map((_, idx) => `<div class="slider-dot ${idx === 0 ? 'active' : ''}" onclick="setSlide(${idx})"></div>`)
+                .join('')
+            : '';
+        }
+
+        if (sideEl) {
+          if (subBanners.length === 0) {
+            sideEl.innerHTML = `
+              <div class="section-state-box is-empty" style="min-height: 190px; padding: 20px;">
+                <div class="state-icon" style="width: 40px; height: 40px; font-size: 18px;">📢</div>
+                <div class="state-title" style="font-size: 14px;">Chưa có banner phụ</div>
+              </div>`;
+          } else {
+            sideEl.innerHTML = subBanners
+              .map((b) => {
+                const title = escapeHtml(b.title || 'Ưu đãi nổi bật');
+                const desc = escapeHtml(b.description || 'Khám phá bộ sưu tập');
+                const imgUrl = escapeHtml(b.imageUrl || b.image_url || FALLBACK_BANNER_IMG);
+                const linkUrl = escapeHtml(b.linkUrl || b.link_url || 'products.html');
+                return `
+                  <div class="side-banner-card" style="background-image: url('${imgUrl}');">
+                    <div class="side-banner-content">
+                      <span class="side-banner-tag">${desc}</span>
+                      <h3 class="side-banner-title">${title}</h3>
+                      <a href="${linkUrl}" class="side-banner-link">
+                        Khám phá ngay
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                          <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                      </a>
+                    </div>
+                  </div>`;
+              })
+              .join('');
+          }
+        }
+
+        currentSlide = 0;
+        if (showControls) {
+          autoPlaySlides();
+        }
+      }
+
+      function renderCategories(categories) {
+        categoriesData = Array.isArray(categories) ? categories : [];
+        const grid = document.getElementById('categoryGrid');
+        const tabsEl = document.getElementById('featuredFilterTabs');
+
+        if (tabsEl) {
+          const dynamicTabs = categoriesData
+            .map((c) => {
+              const id = escapeHtml(c.id);
+              const icon = escapeHtml(c.icon || '🛍️');
+              const name = escapeHtml(c.name || c.id);
+              const isActive = activeFeaturedCategory === c.id ? 'active' : '';
+              return `<button class="tab-btn ${isActive}" onclick="filterTab('${id}', this)">${icon} ${name}</button>`;
+            })
+            .join('');
+          tabsEl.innerHTML = `<button class="tab-btn ${activeFeaturedCategory === 'all' ? 'active' : ''}" onclick="filterTab('all', this)">Tất Cả Sản Phẩm</button>${dynamicTabs}`;
+        }
+
+        if (!grid) return;
+        if (categoriesData.length === 0) {
+          renderSectionEmpty('categories');
+          return;
+        }
+
+        grid.innerHTML = categoriesData
+          .map((c) => {
+            const id = escapeHtml(c.id);
+            const name = escapeHtml(c.name || c.id);
+            const icon = escapeHtml(c.icon || '🛍️');
+            const countText =
+              c.productCount !== undefined && c.productCount !== null
+                ? `${Number(c.productCount)} sản phẩm`
+                : 'Khám phá ngay';
+            return `
+              <div class="category-card" onclick="filterByCategory('${id}')">
+                <div class="category-icon-wrapper">${icon}</div>
+                <h3 class="category-name">${name}</h3>
+                <span class="category-count">${escapeHtml(countText)}</span>
+              </div>`;
+          })
+          .join('');
+      }
+
+      function renderFlashSale(items) {
+        flashProductsData = (Array.isArray(items) ? items : []).map(normalizeProduct);
+        registerProducts(flashProductsData);
+        const grid = document.getElementById('flashGrid');
+        if (!grid) return;
+
+        if (flashProductsData.length === 0) {
+          renderSectionEmpty('flash');
+          return;
+        }
+
+        grid.innerHTML = flashProductsData
+          .map((p) => {
+            const total = Math.max(p.totalStock || 100, p.sold || 1);
+            const pct = Math.min(100, Math.round((p.sold / total) * 100));
+            const remaining = Math.max(0, total - p.sold);
+            return `
+              <div class="flash-card" onclick="quickViewById('${escapeHtml(p.id)}')" style="cursor: pointer;">
+                <div class="flash-img-box">
+                  <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" loading="lazy" />
+                  ${p.discount ? `<span class="discount-ribbon">${escapeHtml(p.discount)}</span>` : ''}
+                </div>
+                <h3 class="flash-prod-title">${escapeHtml(p.title)}</h3>
+                <div class="flash-price-row">
+                  <span class="current-price">${formatPriceVND(p.price)}</span>
+                  ${p.originalPrice > p.price ? `<span class="old-price">${formatPriceVND(p.originalPrice)}</span>` : ''}
+                </div>
+                <div class="deal-progress-box">
+                  <div class="progress-track">
+                    <div class="progress-bar" style="width: ${pct}%;"></div>
+                  </div>
+                  <div class="deal-sold-text">
+                    <span>🔥 Đã bán ${p.sold}/${total}</span>
+                    <span>${remaining > 0 ? `Chỉ còn ${remaining}` : 'Sắp hết'}</span>
+                  </div>
+                </div>
+              </div>`;
+          })
+          .join('');
+      }
+
+      function buildProductCardHtml(p, badgeType = 'HOT') {
+        const badgeClass = badgeType === 'MỚI' ? 'badge-new' : 'badge-hot';
+        return `
+          <article class="product-card" data-category="${escapeHtml(p.category)}">
+            <div class="product-thumb">
+              <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.title)}" loading="lazy" />
+              <div class="badge-group">
+                <span class="prod-badge ${badgeClass}">${escapeHtml(p.exclusive || badgeType)}</span>
+                ${p.discount ? `<span class="prod-badge badge-discount">${escapeHtml(p.discount)}</span>` : ''}
+              </div>
+              <button class="btn-wishlist" onclick="toggleWishlist(this)" title="Yêu thích">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="product-body">
+              <div class="product-meta">
+                <span class="product-category">${escapeHtml(p.shopName)}</span>
+                <span>Đã bán ${p.sold}</span>
+              </div>
+              <h3 class="product-title">
+                <a href="products.html?q=${encodeURIComponent(p.title)}">${escapeHtml(p.title)}</a>
+              </h3>
+              <div class="product-rating">
+                <span class="stars">★★★★★</span>
+                <span class="rating-count">${escapeHtml(p.rating)}</span>
+              </div>
+              <div class="product-pricing">
+                <span class="current-price">${formatPriceVND(p.price)}</span>
+                ${p.originalPrice > p.price ? `<span class="old-price">${formatPriceVND(p.originalPrice)}</span>` : ''}
+              </div>
+              <div class="product-actions">
+                <button class="btn-add-cart" onclick="addToCartById('${escapeHtml(p.id)}')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                  Thêm vào giỏ
+                </button>
+                <button class="btn-quick-view" onclick="quickViewById('${escapeHtml(p.id)}')" title="Xem nhanh">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </article>`;
+      }
+
+      function renderFeaturedProducts(items, categoryFilter = 'all') {
+        if (items !== null) {
+          featuredProductsData = (Array.isArray(items) ? items : []).map(normalizeProduct);
+          registerProducts(featuredProductsData);
+        }
+
+        const grid = document.getElementById('productsGrid');
+        if (!grid) return;
+
+        if (featuredProductsData.length === 0) {
+          renderSectionEmpty('featured');
+          return;
+        }
+
+        const filtered =
+          categoryFilter === 'all'
+            ? featuredProductsData
+            : featuredProductsData.filter((p) => p.category === categoryFilter);
+
+        if (filtered.length === 0) {
+          renderSectionEmpty(
+            'featured',
+            'Không có sản phẩm nào trong danh mục này',
+            'Hãy chọn danh mục khác hoặc nhấn "Tất Cả Sản Phẩm" để xem toàn bộ sản phẩm nổi bật.'
+          );
+          return;
+        }
+
+        grid.innerHTML = filtered.map((p) => buildProductCardHtml(p, 'HOT')).join('');
+      }
+
+      function renderLatestProducts(items) {
+        latestProductsData = (Array.isArray(items) ? items : []).map(normalizeProduct);
+        registerProducts(latestProductsData);
+        const grid = document.getElementById('latestProductsGrid');
+        if (!grid) return;
+
+        if (latestProductsData.length === 0) {
+          renderSectionEmpty('latest');
+          return;
+        }
+
+        grid.innerHTML = latestProductsData.map((p) => buildProductCardHtml(p, 'MỚI')).join('');
+      }
+
+      // ====================================================================
+      // 3. KẾT NỐI API TRANG CHỦ (/api/homepage & FALLBACK /api/products, /api/categories)
+      // ====================================================================
+      async function loadHomepageData() {
+        const forcedState = urlParams.get('state');
+        if (forcedState === 'loading') {
+          ['banners', 'categories', 'flash', 'featured', 'latest'].forEach(renderSectionLoading);
+          return;
+        }
+        if (forcedState === 'empty') {
+          ['banners', 'categories', 'flash', 'featured', 'latest'].forEach((s) => renderSectionEmpty(s));
+          return;
+        }
+        if (forcedState === 'error') {
+          ['banners', 'categories', 'flash', 'featured', 'latest'].forEach((s) =>
+            renderSectionError(s, 'Chế độ kiểm thử trạng thái lỗi kết nối API.')
+          );
+          return;
+        }
+
+        ['banners', 'categories', 'flash', 'featured', 'latest'].forEach(renderSectionLoading);
+
+        try {
+          const homeData = await fetchJsonWithTimeout(`${API_BASE_URL}/api/homepage`);
+          renderBanners(homeData.banners || []);
+          renderCategories(homeData.categories || []);
+          renderFeaturedProducts(homeData.featured_products || [], activeFeaturedCategory);
+          renderLatestProducts(homeData.latest_products || []);
+
+          // Nạp thêm Flash Sale từ /api/products
+          try {
+            const prodData = await fetchJsonWithTimeout(`${API_BASE_URL}/api/products`);
+            renderFlashSale(prodData.flash_products || []);
+          } catch (flashErr) {
+            const inlineFlash = [...(homeData.featured_products || []), ...(homeData.latest_products || [])].filter(
+              (p) => p.isFlashSale || p.is_flash_sale
+            );
+            if (inlineFlash.length > 0) {
+              renderFlashSale(inlineFlash);
+            } else {
+              renderSectionError('flash', flashErr.message);
+            }
+          }
+        } catch (err) {
+          // Nếu /api/homepage chưa tồn tại (404), thử lấy từ /api/categories và /api/products
+          if (err.status === 404) {
+            await Promise.all([retrySection('banners'), retrySection('categories'), loadProductsFallback()]);
+          } else {
+            ['banners', 'categories', 'flash', 'featured', 'latest'].forEach((s) =>
+              renderSectionError(s, err.message)
+            );
+          }
+        }
+      }
+
+      async function loadProductsFallback() {
+        try {
+          const data = await fetchJsonWithTimeout(`${API_BASE_URL}/api/products`);
+          const flash = data.flash_products || [];
+          const recommend = data.recommend_products || [];
+          const combined = [...recommend, ...flash];
+          const featuredSorted = [...combined].sort((a, b) => (b.rating || 0) - (a.rating || 0) || (b.sold || 0) - (a.sold || 0));
+          const latestSorted = [...combined].sort((a, b) => (b.id || 0) - (a.id || 0));
+
+          renderFlashSale(flash);
+          renderFeaturedProducts(featuredSorted, activeFeaturedCategory);
+          renderLatestProducts(latestSorted);
+        } catch (err) {
+          renderSectionError('flash', err.message);
+          renderSectionError('featured', err.message);
+          renderSectionError('latest', err.message);
+        }
+      }
+
+      async function retrySection(section) {
+        renderSectionLoading(section);
+        try {
+          if (section === 'banners') {
+            const data = await fetchJsonWithTimeout(`${API_BASE_URL}/api/homepage/banners`);
+            renderBanners(data.banners || []);
+          } else if (section === 'categories') {
+            try {
+              const data = await fetchJsonWithTimeout(`${API_BASE_URL}/api/homepage/categories`);
+              renderCategories(data.categories || []);
+            } catch (e) {
+              if (e.status === 404) {
+                const catData = await fetchJsonWithTimeout(`${API_BASE_URL}/api/categories`);
+                renderCategories(catData.categories || []);
+              } else {
+                throw e;
+              }
+            }
+          } else if (section === 'flash') {
+            const data = await fetchJsonWithTimeout(`${API_BASE_URL}/api/products`);
+            renderFlashSale(data.flash_products || []);
+          } else if (section === 'featured') {
+            try {
+              const data = await fetchJsonWithTimeout(`${API_BASE_URL}/api/homepage/featured-products`);
+              renderFeaturedProducts(data.featured_products || [], activeFeaturedCategory);
+            } catch (e) {
+              if (e.status === 404) {
+                const prodData = await fetchJsonWithTimeout(`${API_BASE_URL}/api/products`);
+                const combined = [...(prodData.recommend_products || []), ...(prodData.flash_products || [])];
+                renderFeaturedProducts(combined, activeFeaturedCategory);
+              } else {
+                throw e;
+              }
+            }
+          } else if (section === 'latest') {
+            try {
+              const data = await fetchJsonWithTimeout(`${API_BASE_URL}/api/homepage/latest-products`);
+              renderLatestProducts(data.latest_products || []);
+            } catch (e) {
+              if (e.status === 404) {
+                const prodData = await fetchJsonWithTimeout(`${API_BASE_URL}/api/products`);
+                const combined = [...(prodData.recommend_products || []), ...(prodData.flash_products || [])].sort(
+                  (a, b) => (b.id || 0) - (a.id || 0)
+                );
+                renderLatestProducts(combined);
+              } else {
+                throw e;
+              }
+            }
+          }
+        } catch (err) {
+          renderSectionError(section, err.message);
+        }
+      }
+
+      // ====================================================================
+      // 4. INTERACTIVE SLIDER CAROUSEL
+      // ====================================================================
       function showSlide(index) {
+        const slides = document.querySelectorAll('#bannerSlidesContainer .slide');
+        const dots = document.querySelectorAll('#sliderDots .slider-dot');
+        if (slides.length === 0) return;
+
         if (index >= slides.length) currentSlide = 0;
         else if (index < 0) currentSlide = slides.length - 1;
         else currentSlide = index;
 
-        slides.forEach((s, idx) => {
-          s.classList.toggle('active', idx === currentSlide);
-        });
-
-        dots.forEach((d, idx) => {
-          d.classList.toggle('active', idx === currentSlide);
-        });
+        slides.forEach((s, idx) => s.classList.toggle('active', idx === currentSlide));
+        dots.forEach((d, idx) => d.classList.toggle('active', idx === currentSlide));
       }
 
       function changeSlide(direction) {
@@ -3043,6 +3289,9 @@
       }
 
       function autoPlaySlides() {
+        clearInterval(slideTimer);
+        const slides = document.querySelectorAll('#bannerSlidesContainer .slide');
+        if (slides.length <= 1) return;
         slideTimer = setInterval(() => {
           showSlide(currentSlide + 1);
         }, 4500);
@@ -3053,10 +3302,12 @@
         autoPlaySlides();
       }
 
-      autoPlaySlides();
-
-      // 2. Countdown Timer for Flash Sale
-      let hours = 5, minutes = 24, seconds = 38;
+      // ====================================================================
+      // 5. COUNTDOWN TIMER FOR FLASH SALE
+      // ====================================================================
+      let hours = 5,
+        minutes = 24,
+        seconds = 38;
       const hoursEl = document.getElementById('timerHours');
       const minEl = document.getElementById('timerMinutes');
       const secEl = document.getElementById('timerSeconds');
@@ -3079,28 +3330,32 @@
         if (secEl) secEl.textContent = seconds < 10 ? '0' + seconds : seconds;
       }, 1000);
 
-      // 3. Category Filter Tabs
+      // ====================================================================
+      // 6. CATEGORY FILTER TABS & NAVIGATION
+      // ====================================================================
       function filterTab(category, btn) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const cards = document.querySelectorAll('.product-card');
-        cards.forEach(card => {
-          if (category === 'all' || card.getAttribute('data-category') === category) {
-            card.style.display = 'flex';
-          } else {
-            card.style.display = 'none';
-          }
-        });
+        activeFeaturedCategory = category;
+        document.querySelectorAll('#featuredFilterTabs .tab-btn').forEach((b) => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        renderFeaturedProducts(null, category);
       }
 
       function filterByCategory(cat) {
         window.location.href = 'products.html?category=' + encodeURIComponent(cat);
       }
 
-      // 4. Cart & Wishlist Counters
-      let cartCount = 2;
-      let wishlistCount = 3;
+      // ====================================================================
+      // 7. CART, WISHLIST, TOAST & MODALS
+      // ====================================================================
+      let cartCount = 0;
+      let wishlistCount = 0;
+
+      function addToCartById(productId) {
+        const prod = productLookupMap[String(productId)];
+        if (prod) {
+          addToCart(prod.title, formatPriceVND(prod.price));
+        }
+      }
 
       function addToCart(productName, price) {
         cartCount++;
@@ -3126,7 +3381,6 @@
         showToast(`Giỏ hàng của bạn đang có ${cartCount} sản phẩm.`);
       }
 
-      // 5. Toast Notification System
       let toastTimeout = null;
       function showToast(message, icon = '🛒') {
         const toast = document.getElementById('toastBox');
@@ -3144,8 +3398,13 @@
         }, 3200);
       }
 
-      // 6. Quick View Modal
       let currentModalProd = { name: '', price: '' };
+      function quickViewById(productId) {
+        const prod = productLookupMap[String(productId)];
+        if (!prod) return;
+        quickView(prod.title, formatPriceVND(prod.price), prod.image, prod.description);
+      }
+
       function quickView(title, price, imgUrl, desc) {
         currentModalProd = { name: title, price: price };
         document.getElementById('modalTitle').textContent = title;
@@ -3165,7 +3424,6 @@
         closeQuickView();
       }
 
-      // 7. User Modal
       function openUserModal() {
         document.getElementById('userAuthModal').classList.add('active');
       }
@@ -3186,17 +3444,18 @@
         showToast('Đăng nhập thành công! Chào mừng bạn.', '🎉');
       }
 
-      // 8. Copy Voucher Code
       function copyVoucherCode() {
         const code = document.getElementById('voucherCode').textContent;
-        navigator.clipboard.writeText(code).then(() => {
-          showToast('Đã sao chép mã voucher ' + code + ' thành công!', '🎁');
-        }).catch(() => {
-          showToast('Mã voucher: ' + code, '🎁');
-        });
+        navigator.clipboard
+          .writeText(code)
+          .then(() => {
+            showToast('Đã sao chép mã voucher ' + code + ' thành công!', '🎁');
+          })
+          .catch(() => {
+            showToast('Mã voucher: ' + code, '🎁');
+          });
       }
 
-      // 9. Newsletter & Search
       function handleNewsletter(e) {
         e.preventDefault();
         showToast('Cảm ơn bạn đã đăng ký nhận bản tin!', '✉️');
@@ -3213,9 +3472,9 @@
         }
       }
 
-      // 10. Back to top button
       window.addEventListener('scroll', () => {
         const backBtn = document.getElementById('backToTopBtn');
+        if (!backBtn) return;
         if (window.scrollY > 400) {
           backBtn.classList.add('show');
         } else {
@@ -3226,6 +3485,14 @@
       function scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const cartEl = document.getElementById('cartBadge');
+        const wishEl = document.getElementById('wishlistCount');
+        if (cartEl) cartEl.textContent = cartCount;
+        if (wishEl) wishEl.textContent = wishlistCount;
+        loadHomepageData();
+      });
     </script>
   </body>
 </html>
